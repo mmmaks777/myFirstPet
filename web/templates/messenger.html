@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chat with {{.partner}}</h1>
+        </header>
+        <div class="chat">
+            <ul class="messages" id="messages">
+                {{range .messages}}
+                    <li>{{.Content}}</li>
+                {{end}}
+            </ul>
+            <input id="message" type="text" placeholder="Enter your message">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        const user = "{{.username}}";
+        const partner = "{{.partner}}";
+
+        const ws = new WebSocket(`ws://${location.host}/ws?user=${user}&partner=${partner}`);
+
+        ws.onopen = () => {
+            console.log('Connected to the server');
+        };
+
+        ws.onmessage = (event) => {
+            const messages = document.getElementById('messages');
+            const message = document.createElement('li');
+            message.textContent = event.data;
+            messages.appendChild(message);
+        };
+
+        ws.onclose = () => {
+            console.log('Disconnected from the server');
+        };
+
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            ws.send(`${user}:${message}`);
+            document.getElementById('message').value = '';
+
+            // Отображение отправленного сообщения
+            const messages = document.getElementById('messages');
+            const messageElement = document.createElement('li');
+            messageElement.textContent = `${user}:${message}`;
+            messages.appendChild(messageElement);
+        }
+    </script>
+    {{if .error}}
+    <p style="color: red;">{{.error}}</p>
+    {{end}}
+</body>
+</html>

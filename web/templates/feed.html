@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Feed</h1>
+        </header>
+        <div class="posts">
+            {{if .posts}}
+            {{range .posts}}
+            <div class="post">
+                <h4>{{.Title}}</h4>
+                <p>{{.Content}}</p>
+                <p class="post-date">{{.CreatedAt | formatDate}}</p>
+                <p class="post-author">By {{.Author}}</p>
+            </div>
+            {{end}}
+            {{else}}
+            <p>No posts available.</p>
+            {{end}}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Followers</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Followers of <span>{{.Username}}</span></h1>
+        </header>
+        <main>
+            <div class="followers-list">
+                <ul>
+                    {{if .error}}
+                        <p style="color: red;">{{.error}}</p>
+                    {{else}}
+                        {{range .Followers}}
+                        <li>
+                            <a href="/user/{{.}}">{{.}}</a>
+                        </li>
+                        {{end}}
+                    {{end}}
+                </ul>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

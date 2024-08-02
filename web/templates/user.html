@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        function toggleEdit(postId) {
+            const postTitle = document.getElementById(`post-title-${postId}`);
+            const postContent = document.getElementById(`post-content-${postId}`);
+            const editForm = document.getElementById(`edit-form-${postId}`);
+            postTitle.style.display = postTitle.style.display === 'none' ? 'block' : 'none';
+            postContent.style.display = postContent.style.display === 'none' ? 'block' : 'none';
+            editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome, <span>{{.LoggedInUser}}</span></h1>
+        </header>
+        <main>
+            <div class="user-info">
+                <h2>User: <span>{{.Username}}</span></h2>
+                <div class="user-stats">
+                    <a href="/followers/{{.User_id}}">Followers: <span>{{.FollowersCount}}</span></a> |
+                    <a href="/following/{{.User_id}}">Following: <span>{{.FollowingCount}}</span></a>
+                    <a href="/chats">Chats</a>
+                    <a href="/feed">Feed</a>
+                </div>
+                {{if not .IsOwner}}
+                <form action="/follow/{{.User_id}}" method="post" class="follow-form">
+                    {{if .IsFollowing}}
+                    <button type="submit">Unfollow</button>
+                    {{else}}
+                    <button type="submit">Follow</button>
+                    {{end}}
+                </form>
+                {{end}}
+            </div>
+
+            {{if .IsOwner}}
+            <div class="new-post">
+                <h3>Add New Post</h3>
+                <form action="/user/addpost" method="post">
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="content">Content:</label>
+                        <textarea id="content" name="content" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Add Post</button>
+                    </div>
+                </form>
+            </div>
+            {{end}}
+
+            <div class="posts">
+                <h3>Posts</h3>
+                {{if .error}}
+                <p style="color: red;">{{.error}}</p>
+                {{else}}
+                {{range .Posts}}
+                <div class="post">
+                    <h4 id="post-title-{{.ID}}" class="post-title">{{.Title}}</h4>
+                    <p id="post-content-{{.ID}}" class="post-content">{{.Content}}</p>
+                    <p class="post-date">{{.CreatedAt | formatDate}}</p>
+                    <div id="edit-form-{{.ID}}" class="edit-form" style="display:none;">
+                        <form action="/user/editpost/{{.ID}}" method="post">
+                            <input type="hidden" name="id" value="{{.ID}}">
+                            <div class="form-group">
+                                <label for="title">Title:</label>
+                                <input type="text" id="title" name="title" value="{{.Title}}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="content">Content:</label>
+                                <textarea id="content" name="content" rows="4" required>{{.Content}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit">Save</button>
+                                <button type="button" onclick="toggleEdit({{.ID}})">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    {{if $.IsOwner}}
+                    <div class="post-controls">
+                        <button class="edit-btn" onclick="toggleEdit({{.ID}})">Edit</button>
+                        <form action="/user/delpost/{{.ID}}" method="post" style="display:inline;">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+                {{end}}
+            </div>
+        </main>
+    </div>
+</body>
+</html>

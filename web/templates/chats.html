@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chats</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chats</h1>
+        </header>
+        <ul class="followers-list">
+            {{range .chats}}
+                <li>
+                    <a href="/messenger/{{.Username}}">
+                        <strong>{{.Username}}</strong><br>
+                        <span>{{.LastMessage}}</span>
+                    </a>
+                </li>
+            {{end}}
+        </ul>
+    </div>
+</body>
+</html>
