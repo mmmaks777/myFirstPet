@@ -55,6 +55,6 @@ func main() {
 	messenger.StartManager()
 
 	if err := r.Run(":8080"); err != nil {
-		log.Fatal("Server run failed!: ", err)
+		log.Fatal("Server run failed!!!: ", err)
 	}
 }
